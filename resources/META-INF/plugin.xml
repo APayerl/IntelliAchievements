@@ -1,0 +1,48 @@
+<idea-plugin>
+    <id>eu.andret.intelliachievements.v1</id>
+    <name>IntelliAchievements</name>
+    <version>0.1</version>
+    <vendor email="andret2344@gmail.com">andret.eu</vendor>
+
+    <description><![CDATA[
+      Enter short description for your plugin here.<br>
+      <em>most HTML tags may be used</em>
+    ]]></description>
+
+    <change-notes><![CDATA[
+      Add change notes here.<br>
+      <em>most HTML tags may be used</em>
+    ]]>
+    </change-notes>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="173.0"/>
+
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+        <typedHandler implementation="eu.andret.intelliachievements.MyTypedHandlerDelegate"/>
+        <applicationConfigurable instance="eu.andret.intelliachievements.PluginConfigurable"/>
+
+        <consoleFilterProvider implementation="eu.andret.intelliachievements.MyConsoleFilter"/>
+
+        <toolWindow id="AfcForCoders" icon="/icon.png" anchor="right"
+                    factoryClass="eu.andret.intelliachievements.MyToolWindowFactory"/>
+    </extensions>
+
+    <application-components>
+        <component>
+            <implementation-class>eu.andret.intelliachievements.IntelliAchievements</implementation-class>
+            <interface-class>eu.andret.intelliachievements.IntelliAchievements</interface-class>
+        </component>
+    </application-components>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+</idea-plugin>
