@@ -41,7 +41,7 @@ public class PluginSettingsForm {
         panel.setPreferredSize(new Dimension(0, 50));
         panel.setToolTipText(achievement.getText());
 
-        if (achievement.getCurrentState().compareTo(achievement.getMatchingState()) > 0) {
+        if (achievement.getCurrentState() > achievement.getMatchingState()) {
             JLabel label = new JLabel(achievement.getName() + " (Achieved)");
             label.setDisplayedMnemonic('V');
             panel.add(label, "wrap");
@@ -50,9 +50,9 @@ public class PluginSettingsForm {
             //UIManager.put("ProgressBar.foreground", Color.GREEN);
             //UIManager.put("ProgressBar.selectionBackground", Color.WHITE);
             //UIManager.put("ProgressBar.selectionForeground", Color.WHITE);
-            JProgressBar jProgressBar = new JProgressBar(0, (int) achievement.getMatchingState());
+            JProgressBar jProgressBar = new JProgressBar(0, achievement.getMatchingState());
             System.out.println(achievement);
-            jProgressBar.setValue((int) achievement.getCurrentState());
+            jProgressBar.setValue(achievement.getCurrentState());
             jProgressBar.setStringPainted(true);
             jProgressBar.setString(achievement.getCurrentState() + "/" + achievement.getMatchingState());
             jProgressBar.setPreferredSize(new Dimension(700, 20));

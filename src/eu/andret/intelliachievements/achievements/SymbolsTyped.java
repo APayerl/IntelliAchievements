@@ -3,16 +3,15 @@ package eu.andret.intelliachievements.achievements;
 import eu.andret.intelliachievements.IntelliAchievements;
 import eu.andret.intelliachievements.achievement.EditorAchievement;
 
-public class SymbolsTyped extends EditorAchievement<Long> {
+public class SymbolsTyped extends EditorAchievement {
 
-    public SymbolsTyped(IntelliAchievements.State state, Long initialState, Long firstState, Long... states) {
-        super(state, initialState, firstState, states);
+    public SymbolsTyped(IntelliAchievements.State state, Integer firstState, Integer... states) {
+        super(state, firstState, states);
     }
 
     @Override
     public void charTyped(char c) {
         setCurrentState(getCurrentState() + 1);
-        state.keysTyped++;
     }
 
     @Override

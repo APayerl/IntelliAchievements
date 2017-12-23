@@ -55,7 +55,7 @@ private JScrollPane TextPane;
         panel.setPreferredSize(new Dimension(0, 50));
         panel.setToolTipText(achievement.getText());
 
-        if (achievement.getCurrentState().compareTo(achievement.getStates().get(achievement.getStates().size() - 1)) <= 0) {
+        if (achievement.getCurrentState() > achievement.getStates().get(achievement.getStates().size() - 1)) {
             JLabel label = new JLabel(achievement.getName() + " (Achieved)");
             label.setDisplayedMnemonic('V');
             panel.add(label, "wrap");

@@ -23,24 +23,27 @@ public class IntelliAchievements implements PersistentStateComponent<IntelliAchi
     private final State state;
 
     public static class State {
+        private State() {
+        }
+
+        @AchievementStorage(achievement = HelloWorld.class)
         public int helloWorlds;
-        public long keysTyped;
+
+        @AchievementStorage(achievement = SymbolsTyped.class)
+        public int keysTyped;
     }
 
     private IntelliAchievements() {
         state = new State();
-        Achievement<?>[] typical = {
-                new HelloWorld(state, state.helloWorlds, 1, 10, 100, 1000),
-                new SymbolsTyped(state, state.keysTyped, 100L, 1_000L, 1_000_000L, 1_000_000_000L, 1_000_000_000_000L, 1_000_000_000_000_000L)
+        Achievement[] typical = {
+                new HelloWorld(state, 1, 10, 100, 1000),
+                new SymbolsTyped(state, 100, 1_000, 1_000_000, 1_000_000_000, Integer.MAX_VALUE)
         };
 
-        for (Achievement<?> achievement : typical) {
-            achievement.addOnStateUpdateListener(new Achievement.OnStateUpdateListener() {
-                @Override
-                public <T> void stateUpdated(Achievement a, T old, T current) {
-                    if (a.getStates().contains(current)) {
-                        Notifications.Bus.notify(new Notification("Achievement", a.getName(), a.getText(), NotificationType.INFORMATION));
-                    }
+        for (Achievement achievement : typical) {
+            achievement.addOnStateUpdateListener((a, old, current) -> {
+                if (a.getStates().contains(current)) {
+                    Notifications.Bus.notify(new Notification("Achievement", a.getName(), a.getText(), NotificationType.INFORMATION));
                 }
             });
             AchievementManager.registerAchievement(achievement);

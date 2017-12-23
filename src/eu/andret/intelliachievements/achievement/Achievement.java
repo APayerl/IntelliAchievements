@@ -1,27 +1,25 @@
 package eu.andret.intelliachievements.achievement;
 
+import eu.andret.intelliachievements.AchievementStorage;
 import eu.andret.intelliachievements.IntelliAchievements;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class Achievement<T extends Comparable<T>> implements Comparable<Achievement<T>> {
-    private final List<T> states = new ArrayList<>();
+public abstract class Achievement implements Comparable<Achievement> {
+    private final List<Integer> states = new ArrayList<>();
     private final List<OnStateUpdateListener> onStateUpdateListeners = new ArrayList<>();
-    protected final IntelliAchievements.State state;
-
-    private T currentState;
+    private final IntelliAchievements.State state;
 
     public interface OnStateUpdateListener {
-        <T> void stateUpdated(Achievement a, T old, T current);
+        void stateUpdated(Achievement a, int old, int current);
     }
 
-    @SafeVarargs
-    public Achievement(IntelliAchievements.State state, T initialState, T firstState, T... states) {
+    Achievement(IntelliAchievements.State state, int firstState, Integer... states) {
         this.state = state;
-        currentState = initialState;
         this.states.add(firstState);
         this.states.addAll(Arrays.asList(states));
     }
@@ -30,30 +28,50 @@ public abstract class Achievement<T extends Comparable<T>> implements Comparable
 
     public abstract String getText();
 
-
-    public T getMatchingState() {
-        List<T> states = getStates();
-        for (T state : states) {
-            if (state.compareTo(getCurrentState()) > 0) {
+    public int getMatchingState() {
+        List<Integer> states = getStates();
+        for (int state : states) {
+            if (state > getCurrentState()) {
                 return state;
             }
         }
         return states.get(states.size() - 1);
     }
 
-    public final List<T> getStates() {
+    public final List<Integer> getStates() {
         return states;
     }
 
-    public T getCurrentState() {
-        return currentState;
+    public int getCurrentState() {
+        try {
+            return (int) Objects.requireNonNull(getTargetField()).get(state);
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
     }
 
-    public void setCurrentState(T newState) {
-        for (OnStateUpdateListener listener : onStateUpdateListeners) {
-            listener.stateUpdated(this, currentState, newState);
+    private Field getTargetField() {
+        for (Field field : state.getClass().getDeclaredFields()) {
+            if (!field.isAnnotationPresent(AchievementStorage.class)) {
+                continue;
+            }
+            if (field.getAnnotation(AchievementStorage.class).achievement().equals(getClass())) {
+                return field;
+            }
         }
-        currentState = newState;
+        return null;
+    }
+
+    public void setCurrentState(int newState) {
+        try {
+            for (OnStateUpdateListener listener : onStateUpdateListeners) {
+                listener.stateUpdated(this, (int) Objects.requireNonNull(getTargetField()).get(state), newState);
+            }
+            getTargetField().set(state, newState);
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
     }
 
     public void addOnStateUpdateListener(OnStateUpdateListener listener) {
@@ -62,10 +80,16 @@ public abstract class Achievement<T extends Comparable<T>> implements Comparable
 
     @Override
     public String toString() {
-        return "Achievement{" + getClass().getSimpleName() +
-                ", name=\"" + getName() + "\"" +
-                ", currentState=" + currentState +
-                ", matchingState=" + getMatchingState() +
+        String result = "Achievement{" + getClass().getSimpleName() +
+                ", name=\"" + getName() + "\"";
+
+        try {
+            result += ", currentState=" + (int) Objects.requireNonNull(getTargetField()).get(state);
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
+
+        return result + ", matchingState=" + getMatchingState() +
                 ", states=" + states +
                 '}';
     }
@@ -78,7 +102,7 @@ public abstract class Achievement<T extends Comparable<T>> implements Comparable
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Achievement<?> that = (Achievement<?>) o;
+        Achievement that = (Achievement) o;
         return Objects.equals(getStates(), that.getStates()) &&
                 Objects.equals(getCurrentState(), that.getCurrentState()) &&
                 Objects.equals(getName(), that.getName());
@@ -90,7 +114,7 @@ public abstract class Achievement<T extends Comparable<T>> implements Comparable
     }
 
     @Override
-    public int compareTo(@NotNull Achievement<T> achievement) {
+    public int compareTo(@NotNull Achievement achievement) {
         return getClass().getSimpleName().compareTo(achievement.getClass().getSimpleName());
     }
 }

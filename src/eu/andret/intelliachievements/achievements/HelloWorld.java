@@ -4,9 +4,9 @@ import com.intellij.execution.filters.Filter;
 import eu.andret.intelliachievements.IntelliAchievements;
 import eu.andret.intelliachievements.achievement.ConsoleAchievement;
 
-public class HelloWorld extends ConsoleAchievement<Integer> {
-    public HelloWorld(IntelliAchievements.State state, Integer initialState, Integer firstState, Integer... states) {
-        super(state, initialState, firstState, states);
+public class HelloWorld extends ConsoleAchievement {
+    public HelloWorld(IntelliAchievements.State state, Integer firstState, Integer... states) {
+        super(state, firstState, states);
     }
 
     @Override
@@ -23,7 +23,6 @@ public class HelloWorld extends ConsoleAchievement<Integer> {
     public Filter.Result applyFilter(String line, int entireLength) {
         if (line.toLowerCase().contains("Hello World".toLowerCase())) {
             setCurrentState(getCurrentState() + 1);
-            state.helloWorlds++;
         }
         return null;
     }
