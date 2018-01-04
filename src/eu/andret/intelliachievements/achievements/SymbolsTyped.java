@@ -5,7 +5,7 @@ import eu.andret.intelliachievements.achievement.EditorAchievement;
 
 public class SymbolsTyped extends EditorAchievement {
 
-    public SymbolsTyped(IntelliAchievements.State state, Integer firstState, Integer... states) {
+    public SymbolsTyped(IntelliAchievements.AchievementsState state, Integer firstState, Integer... states) {
         super(state, firstState, states);
     }
 
@@ -20,7 +20,7 @@ public class SymbolsTyped extends EditorAchievement {
     }
 
     @Override
-    public String getText() {
-        return "Type " + getMatchingState()/*.get(getCurrentState())*/ + " symbols";
+    public String getToolTip() {
+        return "Type " + getMatchingState() + " symbols";
     }
 }

@@ -39,11 +39,8 @@ private JScrollPane TextPane;
             mainPanel.add(Box.createVerticalStrut(7));
         }
 
-        //Создаем фабрику контента
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        //Создаем контент(окно) с нашим GUI
         Content content = contentFactory.createContent(mainPanel, "", false);
-        //Добавляем в IDE
         toolWindow.getContentManager().addContent(content);
     }
 
@@ -53,17 +50,17 @@ private JScrollPane TextPane;
         final JPanel panel = new JPanel();
         panel.setBackground(JBColor.GRAY);
         panel.setPreferredSize(new Dimension(0, 50));
-        panel.setToolTipText(achievement.getText());
+        panel.setToolTipText(achievement.getToolTip());
 
         if (achievement.getCurrentState() > achievement.getStates().get(achievement.getStates().size() - 1)) {
             JLabel label = new JLabel(achievement.getName() + " (Achieved)");
             label.setDisplayedMnemonic('V');
             panel.add(label, "wrap");
         } else {
-            //UIManager.put("ProgressBar.background", Color.GREEN);
-            //UIManager.put("ProgressBar.foreground", Color.GREEN);
-            //UIManager.put("ProgressBar.selectionBackground", Color.WHITE);
-            //UIManager.put("ProgressBar.selectionForeground", Color.WHITE);
+            //            UIManager.put("ProgressBar.background", Color.GREEN);
+            //            UIManager.put("ProgressBar.foreground", Color.GREEN);
+            //            UIManager.put("ProgressBar.selectionBackground", Color.WHITE);
+            //            UIManager.put("ProgressBar.selectionForeground", Color.WHITE);
             JProgressBar jProgressBar = new JProgressBar(0, (int) achievement.getStates().get(achievement.getStates().size() - 1));
 
             jProgressBar.setValue((int) achievement.getCurrentState());

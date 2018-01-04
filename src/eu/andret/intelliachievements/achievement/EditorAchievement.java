@@ -3,7 +3,7 @@ package eu.andret.intelliachievements.achievement;
 import eu.andret.intelliachievements.IntelliAchievements;
 
 public abstract class EditorAchievement extends Achievement {
-    public EditorAchievement(IntelliAchievements.State state, int firstState, Integer... states) {
+    public EditorAchievement(IntelliAchievements.AchievementsState state, int firstState, Integer... states) {
         super(state, firstState, states);
     }
 

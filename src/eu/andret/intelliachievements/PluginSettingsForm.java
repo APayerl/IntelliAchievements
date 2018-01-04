@@ -1,7 +1,6 @@
 package eu.andret.intelliachievements;
 
-import com.intellij.ui.JBColor;
-import eu.andret.intelliachievements.achievement.Achievement;
+import eu.andret.intelliachievements.achievement.AchievementFactory;
 import eu.andret.intelliachievements.achievement.AchievementManager;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
@@ -9,75 +8,40 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.WindowConstants;
 import net.miginfocom.swing.MigLayout;
-import org.jetbrains.annotations.NotNull;
 
 public class PluginSettingsForm {
-    private final JPanel root = new JPanel(new MigLayout("wrap 1", "[grow]"));
+    private JPanel root;
 
-    PluginSettingsForm() {
-        JPanel projectSetings = new JPanel(new MigLayout("", "[grow]", "[nogrid]"));
+    public JComponent getRootComponent() {
+        if (root == null) {
+            root = new JPanel(new MigLayout("wrap 1", "[grow]"));
+            JPanel achievementsPanel = new JPanel(new MigLayout("", "[grow]", "[nogrid]"));
+            achievementsPanel.setBorder(BorderFactory.createTitledBorder("Achievements"));
+            achievementsPanel.setLayout(new BoxLayout(achievementsPanel, BoxLayout.PAGE_AXIS));
+            achievementsPanel.setMaximumSize(new Dimension(720, 500));
 
-        JPanel ideSettings = new JPanel(new MigLayout("", "[grow]", "[nogrid]"));
-        ideSettings.setBorder(BorderFactory.createTitledBorder("Achievements"));
-        ideSettings.setLayout(new BoxLayout(ideSettings, BoxLayout.PAGE_AXIS));
+            AchievementManager.getAllAchievements().forEach(achievement -> {
+                achievementsPanel.add(AchievementFactory.getAchievementPanel(achievement));
+                achievementsPanel.add(Box.createVerticalStrut(5));
+            });
 
-        for (Achievement achievement : AchievementManager.getAllAchievements()) {
-            ideSettings.add(getAchievementPanel(achievement));
-            ideSettings.add(Box.createVerticalStrut(7));
+            root.add(achievementsPanel, "grow");
         }
-
-        root.add(projectSetings, "grow");
-        root.add(ideSettings, "grow");
-    }
-
-    private JPanel getAchievementPanel(@NotNull Achievement achievement) {
-        final JPanel panel = new JPanel();
-        panel.setBackground(JBColor.GRAY);
-        panel.setPreferredSize(new Dimension(0, 50));
-        panel.setToolTipText(achievement.getText());
-
-        if (achievement.getCurrentState() > achievement.getMatchingState()) {
-            JLabel label = new JLabel(achievement.getName() + " (Achieved)");
-            label.setDisplayedMnemonic('V');
-            panel.add(label, "wrap");
-        } else {
-            //UIManager.put("ProgressBar.background", Color.GREEN);
-            //UIManager.put("ProgressBar.foreground", Color.GREEN);
-            //UIManager.put("ProgressBar.selectionBackground", Color.WHITE);
-            //UIManager.put("ProgressBar.selectionForeground", Color.WHITE);
-            JProgressBar jProgressBar = new JProgressBar(0, achievement.getMatchingState());
-            System.out.println(achievement);
-            jProgressBar.setValue(achievement.getCurrentState());
-            jProgressBar.setStringPainted(true);
-            jProgressBar.setString(achievement.getCurrentState() + "/" + achievement.getMatchingState());
-            jProgressBar.setPreferredSize(new Dimension(700, 20));
-
-            JLabel label = new JLabel(achievement.getName());
-            label.setDisplayedMnemonic('V');
-            label.setLabelFor(jProgressBar);
-            panel.add(label);
-            panel.add(jProgressBar);
-        }
-        return panel;
-    }
-
-    public JComponent createComponent() {
         return root;
     }
 
     public static void main(String[] args) {
+        new IntelliAchievements().initComponent();
         PluginSettingsForm form = new PluginSettingsForm();
 
-        JFrame frame = new JFrame("Test: AfcSettingsForm");
+        JFrame frame = new JFrame("Test: IntelliAchievements SettingsForm");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setContentPane(form.createComponent());
-        frame.setSize(600, 600);
-        frame.setLocation(500, 300);
+        frame.setContentPane(form.getRootComponent());
+        frame.setSize(730, 300);
+        frame.setLocation(200, 200);
         frame.setVisible(true);
     }
 }

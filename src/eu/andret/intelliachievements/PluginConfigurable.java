@@ -23,7 +23,7 @@ public class PluginConfigurable implements Configurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        return settingsForm.createComponent();
+        return settingsForm.getRootComponent();
     }
 
     @Override

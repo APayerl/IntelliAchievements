@@ -5,13 +5,10 @@ import eu.andret.intelliachievements.IntelliAchievements;
 
 public abstract class ConsoleAchievement extends Achievement implements Filter {
     @SafeVarargs
-    public ConsoleAchievement(IntelliAchievements.State state, int firstState, Integer... states) {
+    public ConsoleAchievement(IntelliAchievements.AchievementsState state, int firstState, Integer... states) {
         super(state, firstState, states);
     }
 
     @Override
-    public Filter.Result applyFilter(String line, int entireLength) {
-
-        return null;
-    }
+    public abstract Filter.Result applyFilter(String line, int entireLength);
 }

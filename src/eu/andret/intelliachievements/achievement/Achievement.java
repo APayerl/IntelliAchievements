@@ -12,13 +12,13 @@ import org.jetbrains.annotations.NotNull;
 public abstract class Achievement implements Comparable<Achievement> {
     private final List<Integer> states = new ArrayList<>();
     private final List<OnStateUpdateListener> onStateUpdateListeners = new ArrayList<>();
-    private final IntelliAchievements.State state;
+    private final IntelliAchievements.AchievementsState state;
 
     public interface OnStateUpdateListener {
         void stateUpdated(Achievement a, int old, int current);
     }
 
-    Achievement(IntelliAchievements.State state, int firstState, Integer... states) {
+    Achievement(IntelliAchievements.AchievementsState state, int firstState, Integer... states) {
         this.state = state;
         this.states.add(firstState);
         this.states.addAll(Arrays.asList(states));
@@ -26,7 +26,7 @@ public abstract class Achievement implements Comparable<Achievement> {
 
     public abstract String getName();
 
-    public abstract String getText();
+    public abstract String getToolTip();
 
     public int getMatchingState() {
         List<Integer> states = getStates();
@@ -63,7 +63,7 @@ public abstract class Achievement implements Comparable<Achievement> {
         return null;
     }
 
-    public void setCurrentState(int newState) {
+    protected void setCurrentState(int newState) {
         try {
             for (OnStateUpdateListener listener : onStateUpdateListeners) {
                 listener.stateUpdated(this, (int) Objects.requireNonNull(getTargetField()).get(state), newState);

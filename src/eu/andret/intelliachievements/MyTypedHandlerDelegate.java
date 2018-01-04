@@ -16,9 +16,7 @@ public class MyTypedHandlerDelegate extends TypedHandlerDelegate {
     @Override
     public Result charTyped(char c, Project project, @NotNull Editor editor, @NotNull PsiFile file) {
         for (Achievement achievement : achievements) {
-            if (achievement instanceof EditorAchievement) {
-                ((EditorAchievement) achievement).charTyped(c);
-            }
+            ((EditorAchievement) achievement).charTyped(c);
         }
         return Result.CONTINUE;
     }

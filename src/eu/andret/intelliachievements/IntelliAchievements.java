@@ -7,71 +7,61 @@ import com.intellij.openapi.components.ApplicationComponent;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.util.xmlb.XmlSerializerUtil;
 import eu.andret.intelliachievements.achievement.Achievement;
 import eu.andret.intelliachievements.achievement.AchievementManager;
 import eu.andret.intelliachievements.achievements.HelloWorld;
 import eu.andret.intelliachievements.achievements.SymbolsTyped;
-import org.jetbrains.annotations.NotNull;
+import java.util.Arrays;
 
-@State(name = "IntelliAchievements",
-        storages = {
-                @Storage(id = "other", file = "$APP_CONFIG$/IntelliAchievements.xml")
-        }
-)
-public class IntelliAchievements implements PersistentStateComponent<IntelliAchievements.State>, ApplicationComponent {
-    private final State state;
 
-    public static class State {
-        private State() {
+public class IntelliAchievements implements PersistentStateComponent<IntelliAchievements.AchievementsState>, ApplicationComponent {
+    private AchievementsState state = new AchievementsState();
+
+    @State(name = "IntelliAchievements",
+            storages = {
+                    @Storage(id = "other", file = "$APP_CONFIG$/IntelliAchievements.xml")
+            }
+    )
+    public static class AchievementsState {
+        private AchievementsState() {
         }
 
         @AchievementStorage(achievement = HelloWorld.class)
-        public int helloWorlds;
+        public int helloWorlds = 1;
 
         @AchievementStorage(achievement = SymbolsTyped.class)
-        public int keysTyped;
-    }
-
-    private IntelliAchievements() {
-        state = new State();
-        Achievement[] typical = {
-                new HelloWorld(state, 1, 10, 100, 1000),
-                new SymbolsTyped(state, 100, 1_000, 1_000_000, 1_000_000_000, Integer.MAX_VALUE)
-        };
-
-        for (Achievement achievement : typical) {
-            achievement.addOnStateUpdateListener((a, old, current) -> {
-                if (a.getStates().contains(current)) {
-                    Notifications.Bus.notify(new Notification("Achievement", a.getName(), a.getText(), NotificationType.INFORMATION));
-                }
-            });
-            AchievementManager.registerAchievement(achievement);
-        }
+        public int keysTyped = 50;
     }
 
     @Override
-    public IntelliAchievements.State getState() {
+    public AchievementsState getState() {
         return state;
     }
 
     @Override
-    public void loadState(IntelliAchievements.State state) {
-        System.out.println(state + ", ");
-        XmlSerializerUtil.copyBean(state, this);
+    public void loadState(AchievementsState loadedState) {
+        state = loadedState;
     }
 
     @Override
     public void initComponent() {
+        Achievement[] typical = {
+                new HelloWorld(state, 1),//, 10, 100, 1000),
+                new SymbolsTyped(state, 100, 1_000, 1_000_000, 1_000_000_000, Integer.MAX_VALUE)
+        };
+
+        Arrays.stream(typical).forEach(achievement -> {
+            achievement.addOnStateUpdateListener((a, old, current) -> {
+                if (a.getStates().contains(current)) {
+                    Notifications.Bus.notify(new Notification("Achievement", a.getName(), a.getToolTip(), NotificationType.INFORMATION));
+                }
+            });
+            AchievementManager.registerAchievement(achievement);
+        });
     }
 
     @Override
     public void disposeComponent() {
-    }
-
-    @NotNull
-    @Override
-    public String getComponentName() {
-        return "IntelliAchievements";
+        AchievementManager.disposeAll();
     }
 }

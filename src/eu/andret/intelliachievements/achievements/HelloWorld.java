@@ -5,7 +5,7 @@ import eu.andret.intelliachievements.IntelliAchievements;
 import eu.andret.intelliachievements.achievement.ConsoleAchievement;
 
 public class HelloWorld extends ConsoleAchievement {
-    public HelloWorld(IntelliAchievements.State state, Integer firstState, Integer... states) {
+    public HelloWorld(IntelliAchievements.AchievementsState state, Integer firstState, Integer... states) {
         super(state, firstState, states);
     }
 
@@ -15,7 +15,7 @@ public class HelloWorld extends ConsoleAchievement {
     }
 
     @Override
-    public String getText() {
+    public String getToolTip() {
         return "Type traditional \"Hello World\".";
     }
 
