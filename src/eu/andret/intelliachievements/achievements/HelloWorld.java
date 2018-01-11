@@ -15,8 +15,13 @@ public class HelloWorld extends ConsoleAchievement {
     }
 
     @Override
-    public String getToolTip() {
+    public String getToolTipText() {
         return "Type traditional \"Hello World\".";
+    }
+
+    @Override
+    public boolean isHidden() {
+        return false;
     }
 
     @Override

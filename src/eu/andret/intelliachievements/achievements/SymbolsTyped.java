@@ -20,7 +20,13 @@ public class SymbolsTyped extends EditorAchievement {
     }
 
     @Override
-    public String getToolTip() {
+    public String getToolTipText() {
         return "Type " + getMatchingState() + " symbols";
+    }
+
+
+    @Override
+    public boolean isHidden() {
+        return false;
     }
 }

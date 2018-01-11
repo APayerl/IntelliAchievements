@@ -9,13 +9,21 @@ import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import eu.andret.intelliachievements.achievement.Achievement;
 import eu.andret.intelliachievements.achievement.AchievementManager;
+import eu.andret.intelliachievements.achievements.EasterEggFound;
+import eu.andret.intelliachievements.achievements.FilesCreated;
+import eu.andret.intelliachievements.achievements.FilesDeleted;
 import eu.andret.intelliachievements.achievements.HelloWorld;
 import eu.andret.intelliachievements.achievements.SymbolsTyped;
 import java.util.Arrays;
 
-
 public class IntelliAchievements implements PersistentStateComponent<IntelliAchievements.AchievementsState>, ApplicationComponent {
+    private static IntelliAchievements instance;
+
     private AchievementsState state = new AchievementsState();
+
+    public IntelliAchievements() {
+        instance = this;
+    }
 
     @State(name = "IntelliAchievements",
             storages = {
@@ -27,10 +35,19 @@ public class IntelliAchievements implements PersistentStateComponent<IntelliAchi
         }
 
         @AchievementStorage(achievement = HelloWorld.class)
-        public int helloWorlds = 1;
+        public int helloWorlds;
 
         @AchievementStorage(achievement = SymbolsTyped.class)
-        public int keysTyped = 50;
+        public int keysTyped;
+
+        @AchievementStorage(achievement = FilesCreated.class)
+        public int filesCreated;
+
+        @AchievementStorage(achievement = FilesDeleted.class)
+        public int filesDeleted;
+
+        @AchievementStorage(achievement = EasterEggFound.class)
+        public int easterEggFound;
     }
 
     @Override
@@ -46,22 +63,30 @@ public class IntelliAchievements implements PersistentStateComponent<IntelliAchi
     @Override
     public void initComponent() {
         Achievement[] typical = {
-                new HelloWorld(state, 1),//, 10, 100, 1000),
-                new SymbolsTyped(state, 100, 1_000, 1_000_000, 1_000_000_000, Integer.MAX_VALUE)
+                new HelloWorld(state, 1, 10, 100),
+                new SymbolsTyped(state, 100, 1_000, 1_000_000, 1_000_000_000, Integer.MAX_VALUE),
+                new FilesCreated(state, 1, 10, 100, 1_000, 10_000),
+                new FilesDeleted(state, 1, 10, 100, 1_000, 10_000),
+                new EasterEggFound(state, 1)
         };
 
         Arrays.stream(typical).forEach(achievement -> {
             achievement.addOnStateUpdateListener((a, old, current) -> {
                 if (a.getStates().contains(current)) {
-                    Notifications.Bus.notify(new Notification("Achievement", a.getName(), a.getToolTip(), NotificationType.INFORMATION));
+                    Notifications.Bus.notify(new Notification("Achievement", a.getName(), a.getToolTipText(), NotificationType.INFORMATION));
                 }
             });
             AchievementManager.registerAchievement(achievement);
         });
+        MyListeners.setUpListeners();
     }
 
     @Override
     public void disposeComponent() {
         AchievementManager.disposeAll();
+    }
+
+    public static IntelliAchievements getInstance() {
+        return instance;
     }
 }

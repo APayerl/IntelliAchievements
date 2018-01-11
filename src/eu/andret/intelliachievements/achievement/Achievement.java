@@ -10,6 +10,9 @@ import java.util.Objects;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class Achievement implements Comparable<Achievement> {
+    private final int id = globalId++;
+    private static Achievement instance;
+    private static int globalId = 1;
     private final List<Integer> states = new ArrayList<>();
     private final List<OnStateUpdateListener> onStateUpdateListeners = new ArrayList<>();
     private final IntelliAchievements.AchievementsState state;
@@ -22,13 +25,16 @@ public abstract class Achievement implements Comparable<Achievement> {
         this.state = state;
         this.states.add(firstState);
         this.states.addAll(Arrays.asList(states));
+        Achievement.instance = this;
     }
 
     public abstract String getName();
 
-    public abstract String getToolTip();
+    public abstract String getToolTipText();
 
-    public int getMatchingState() {
+    public abstract boolean isHidden();
+
+    public final int getMatchingState() {
         List<Integer> states = getStates();
         for (int state : states) {
             if (state > getCurrentState()) {
@@ -63,7 +69,7 @@ public abstract class Achievement implements Comparable<Achievement> {
         return null;
     }
 
-    protected void setCurrentState(int newState) {
+    public void setCurrentState(int newState) {
         try {
             for (OnStateUpdateListener listener : onStateUpdateListeners) {
                 listener.stateUpdated(this, (int) Objects.requireNonNull(getTargetField()).get(state), newState);
@@ -74,7 +80,7 @@ public abstract class Achievement implements Comparable<Achievement> {
         }
     }
 
-    public void addOnStateUpdateListener(OnStateUpdateListener listener) {
+    public final void addOnStateUpdateListener(OnStateUpdateListener listener) {
         onStateUpdateListeners.add(listener);
     }
 
@@ -94,8 +100,12 @@ public abstract class Achievement implements Comparable<Achievement> {
                 '}';
     }
 
+    public static Achievement getInstance() {
+        return instance;
+    }
+
     @Override
-    public boolean equals(Object o) {
+    public final boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -109,12 +119,16 @@ public abstract class Achievement implements Comparable<Achievement> {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         return Objects.hash(getStates(), getCurrentState(), getName());
     }
 
     @Override
     public int compareTo(@NotNull Achievement achievement) {
-        return getClass().getSimpleName().compareTo(achievement.getClass().getSimpleName());
+        //        return getClass().getSimpleName().compareTo(achievement.getClass().getSimpleName());
+        if (isHidden() == achievement.isHidden()) {
+            return id - achievement.id;
+        }
+        return (isHidden() ? 1 : 0) - (achievement.isHidden() ? 1 : 0);
     }
 }

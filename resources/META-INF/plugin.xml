@@ -1,16 +1,17 @@
 <idea-plugin>
     <id>eu.andret.intelliachievements.v1</id>
     <name>IntelliAchievements</name>
-    <version>0.1</version>
+    <version>0.2</version>
     <vendor email="andret2344@gmail.com">Andret</vendor>
 
     <description><![CDATA[
-      This plugin adds some fun during coding.<br>
-      Allows you to get and check achievements for writing, compiling and running your Java programs.
+      This plugin adds some fun during coding.
+      Allows you to get and check achievements for writing and running your Java programs, or using your IDE User Interface.
     ]]></description>
 
     <change-notes><![CDATA[
       <ul>
+        <li><b>v0.2</b> - fixed crash on startup and added more achievements
         <li><b>v0.1</b> - initial release, contains 2 levelable achievements
       </ul>
     ]]>
@@ -26,14 +27,9 @@
     -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- Add your extensions here -->
         <typedHandler implementation="eu.andret.intelliachievements.MyTypedHandlerDelegate"/>
         <applicationConfigurable instance="eu.andret.intelliachievements.PluginConfigurable"/>
-
         <consoleFilterProvider implementation="eu.andret.intelliachievements.MyConsoleFilter"/>
-
-        <toolWindow id="AfcForCoders" icon="/icon.png" anchor="right"
-                    factoryClass="eu.andret.intelliachievements.MyToolWindowFactory"/>
     </extensions>
 
     <application-components>
@@ -44,6 +40,10 @@
     </application-components>
 
     <actions>
-        <!-- Add your actions here -->
+        <action id="eu.andret.intelliachievements.achievements.EggFound"
+                class="eu.andret.intelliachievements.achievements.EggFound"
+                text="Easter Egg">
+            <add-to-group group-id="AnalyzeMenu" anchor="last"/>
+        </action>
     </actions>
 </idea-plugin>
