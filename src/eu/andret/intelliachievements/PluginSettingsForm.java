@@ -43,6 +43,7 @@ public class PluginSettingsForm {
     }
 
     public static void main(String[] args) {
+        IntelliAchievements.beta();
         new IntelliAchievements().initComponent();
         PluginSettingsForm form = new PluginSettingsForm();
 

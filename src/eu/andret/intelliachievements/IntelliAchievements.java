@@ -18,6 +18,7 @@ import java.util.Arrays;
 
 public class IntelliAchievements implements PersistentStateComponent<IntelliAchievements.AchievementsState>, ApplicationComponent {
     private static IntelliAchievements instance;
+    private static boolean release = true;
 
     private AchievementsState state = new AchievementsState();
 
@@ -78,7 +79,9 @@ public class IntelliAchievements implements PersistentStateComponent<IntelliAchi
             });
             AchievementManager.registerAchievement(achievement);
         });
-        MyListeners.setUpListeners();
+        if (release) {
+            MyListeners.setUpListeners();
+        }
     }
 
     @Override
@@ -88,5 +91,9 @@ public class IntelliAchievements implements PersistentStateComponent<IntelliAchi
 
     public static IntelliAchievements getInstance() {
         return instance;
+    }
+
+    public static void beta() {
+        release = false;
     }
 }
