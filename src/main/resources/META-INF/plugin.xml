@@ -1,0 +1,37 @@
+<idea-plugin>
+	<id>eu.andret.intelliachievements</id>
+	<name>Plugin display name here</name>
+	<vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+
+	<description><![CDATA[
+    Enter short description for your plugin here.<br>
+    <em>most HTML tags may be used</em>
+    ]]></description>
+
+	<!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+		 on how to target different products -->
+	<!-- uncomment to enable plugin in all products
+	<depends>com.intellij.modules.lang</depends>
+	-->
+
+	<extensions defaultExtensionNs="com.intellij">
+		<typedHandler implementation="eu.andret.intelliachievements.MyTypedHandlerDelegate"/>
+		<applicationConfigurable instance="eu.andret.intelliachievements.PluginConfigurable"/>
+		<consoleFilterProvider implementation="eu.andret.intelliachievements.MyConsoleFilter"/>
+	</extensions>
+
+	<application-components>
+		<component>
+			<implementation-class>eu.andret.intelliachievements.IntelliAchievements</implementation-class>
+			<interface-class>eu.andret.intelliachievements.IntelliAchievements</interface-class>
+		</component>
+	</application-components>
+
+	<actions>
+		<action id="eu.andret.intelliachievements.achievements.EggFound"
+				class="eu.andret.intelliachievements.achievements.EggFound"
+				text="Easter Egg">
+			<add-to-group group-id="AnalyzeMenu" anchor="last"/>
+		</action>
+	</actions>
+</idea-plugin>
