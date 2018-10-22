@@ -1,4 +1,7 @@
+.gradle/
 .idea/
-IntelliAchievements.iml
+gradle/
+gradlew
+gradlew.bat
 out/
-IntelliAchievements.jar
+src/test/
