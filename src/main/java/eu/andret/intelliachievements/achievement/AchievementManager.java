@@ -14,6 +14,7 @@ public final class AchievementManager {
 	}
 
 	public static void registerAchievement(@NotNull Achievement achievement) {
+
 		achievements.add(achievement);
 	}
 
@@ -21,10 +22,6 @@ public final class AchievementManager {
 		return achievements.stream()
 				.filter(a -> a.getClass().isAssignableFrom(clazz) || clazz.isAssignableFrom(a.getClass()))
 				.collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
-	}
-
-	public static void disposeAll() {
-		achievements.clear();
 	}
 
 	public static List<Achievement> getAllAchievements() {
