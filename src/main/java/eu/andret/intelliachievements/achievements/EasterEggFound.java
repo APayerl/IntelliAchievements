@@ -2,15 +2,14 @@ package eu.andret.intelliachievements.achievements;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import eu.andret.intelliachievements.IntelliAchievements;
 import eu.andret.intelliachievements.achievement.AchievementManager;
 import eu.andret.intelliachievements.achievement.MenuAchievement;
 
 public class EasterEggFound extends MenuAchievement {
-	public EasterEggFound(Project project, IntelliAchievements.AchievementsState state, int... states) {
-		super(project, state, states);
+	public EasterEggFound(IntelliAchievements.AchievementsState state, int... states) {
+		super(state, states);
 	}
 
 	@Override

@@ -1,6 +1,5 @@
 package eu.andret.intelliachievements.achievement;
 
-import com.intellij.openapi.project.Project;
 import eu.andret.intelliachievements.AchievementStorage;
 import eu.andret.intelliachievements.IntelliAchievements;
 import org.jetbrains.annotations.NotNull;
@@ -12,7 +11,6 @@ import java.util.List;
 import java.util.Objects;
 
 public abstract class Achievement implements Comparable<Achievement> {
-	private final Project project;
 	private final int[] states;
 	private final List<OnStateUpdateListener> onStateUpdateListeners = new ArrayList<>();
 	private final IntelliAchievements.AchievementsState state;
@@ -21,8 +19,7 @@ public abstract class Achievement implements Comparable<Achievement> {
 		void stateUpdated(Achievement a, int old, int current);
 	}
 
-	Achievement(Project project, IntelliAchievements.AchievementsState state, int... states) {
-		this.project = project;
+	Achievement(IntelliAchievements.AchievementsState state, int... states) {
 		this.state = state;
 		this.states = states;
 	}
@@ -74,11 +71,6 @@ public abstract class Achievement implements Comparable<Achievement> {
 
 	public final void addOnStateUpdateListener(OnStateUpdateListener listener) {
 		onStateUpdateListeners.add(listener);
-	}
-
-	@NotNull
-	public final Project getProject() {
-		return project;
 	}
 
 	@Override

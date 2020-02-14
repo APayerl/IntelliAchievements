@@ -1,12 +1,11 @@
 package eu.andret.intelliachievements.achievements;
 
-import com.intellij.openapi.project.Project;
 import eu.andret.intelliachievements.IntelliAchievements;
 import eu.andret.intelliachievements.achievement.EditorAchievement;
 
 public class SymbolsTyped extends EditorAchievement {
-	public SymbolsTyped(Project project, IntelliAchievements.AchievementsState state, int... states) {
-		super(project, state, states);
+	public SymbolsTyped(IntelliAchievements.AchievementsState state, int... states) {
+		super(state, states);
 	}
 
 	@Override

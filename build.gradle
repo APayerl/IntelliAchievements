@@ -4,7 +4,6 @@ plugins {
 }
 
 group 'eu.andret'
-version '0.0.1-SNAPSHOT'
 
 sourceCompatibility = JavaVersion.VERSION_11
 
@@ -20,12 +19,6 @@ dependencies {
 
 intellij {
 	version '2019.3.2'
-}
-
-patchPluginXml {
-	changeNotes """
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>"""
 }
 
 tasks.withType(JavaCompile) {

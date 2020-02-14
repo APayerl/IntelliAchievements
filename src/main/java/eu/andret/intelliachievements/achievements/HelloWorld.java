@@ -1,13 +1,12 @@
 package eu.andret.intelliachievements.achievements;
 
 import com.intellij.execution.filters.Filter;
-import com.intellij.openapi.project.Project;
 import eu.andret.intelliachievements.IntelliAchievements;
 import eu.andret.intelliachievements.achievement.ConsoleAchievement;
 
 public class HelloWorld extends ConsoleAchievement {
-	public HelloWorld(Project project, IntelliAchievements.AchievementsState state, int... states) {
-		super(project, state, states);
+	public HelloWorld(IntelliAchievements.AchievementsState state, int... states) {
+		super(state, states);
 	}
 
 	@Override

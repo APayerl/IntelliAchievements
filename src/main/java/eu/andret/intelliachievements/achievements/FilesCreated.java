@@ -1,12 +1,17 @@
 package eu.andret.intelliachievements.achievements;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectFileIndex;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.newvfs.events.VFileCreateEvent;
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import eu.andret.intelliachievements.IntelliAchievements;
 import eu.andret.intelliachievements.achievement.FileSystemAchievement;
+import org.jetbrains.annotations.NotNull;
 
 public class FilesCreated extends FileSystemAchievement {
-	public FilesCreated(Project project, IntelliAchievements.AchievementsState state, int... states) {
-		super(project, state, states);
+	public FilesCreated(IntelliAchievements.AchievementsState state, int... states) {
+		super(state, states);
 	}
 
 	@Override
@@ -24,9 +29,11 @@ public class FilesCreated extends FileSystemAchievement {
 		return false;
 	}
 
-//	@Override
-//	public void fileCreated(@NotNull VirtualFileEvent event) {
-//		setCurrentState(getCurrentState() + 1);
-//	}
-
+	@Override
+	public void fileChangedAfter(@NotNull VFileEvent event, @NotNull Project project) {
+		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(project).getFileIndex();
+		if (event instanceof VFileCreateEvent && event.getFile() != null && fileIndex.isInContent(event.getFile())) {
+			setCurrentState(getCurrentState() + 1);
+		}
+	}
 }

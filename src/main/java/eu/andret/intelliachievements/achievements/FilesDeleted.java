@@ -1,12 +1,17 @@
 package eu.andret.intelliachievements.achievements;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ProjectFileIndex;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.newvfs.events.VFileDeleteEvent;
+import com.intellij.openapi.vfs.newvfs.events.VFileEvent;
 import eu.andret.intelliachievements.IntelliAchievements;
 import eu.andret.intelliachievements.achievement.FileSystemAchievement;
+import org.jetbrains.annotations.NotNull;
 
 public class FilesDeleted extends FileSystemAchievement {
-	public FilesDeleted(Project project, IntelliAchievements.AchievementsState state, int... states) {
-		super(project, state, states);
+	public FilesDeleted(IntelliAchievements.AchievementsState state, int... states) {
+		super(state, states);
 	}
 
 	@Override
@@ -24,9 +29,11 @@ public class FilesDeleted extends FileSystemAchievement {
 		return false;
 	}
 
-//    @Override
-//    public void fileDeleted(@NotNull VirtualFileEvent event) {
-//        setCurrentState(getCurrentState() + 1);
-//    }
-
+	@Override
+	public void fileChangedBefore(@NotNull VFileEvent event, @NotNull Project project) {
+		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(project).getFileIndex();
+		if (event instanceof VFileDeleteEvent && event.getFile() != null && fileIndex.isInContent(event.getFile())) {
+			setCurrentState(getCurrentState() + 1);
+		}
+	}
 }
