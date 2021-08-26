@@ -3,7 +3,7 @@ package eu.andret.intelliachievements.achievement;
 import eu.andret.intelliachievements.IntelliAchievements;
 
 public abstract class MenuAchievement extends Achievement {
-	public MenuAchievement(IntelliAchievements.AchievementsState state, int... states) {
+	protected MenuAchievement(final IntelliAchievements.AchievementsState state, final int... states) {
 		super(state, states);
 	}
 }

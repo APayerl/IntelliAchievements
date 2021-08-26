@@ -1,27 +1,36 @@
 plugins {
-	id 'java'
-	id 'org.jetbrains.intellij' version '0.4.16'
+	id 'org.jetbrains.intellij' version '1.1.4'
 }
 
-group 'eu.andret'
+apply plugin: 'java'
+apply plugin: 'idea'
 
 sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 
-repositories {
-	mavenCentral()
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+	version = '2021.2.1'
+	plugins = ['com.intellij.java']
 }
+
+buildSearchableOptions {
+	enabled = false
+}
+
+patchPluginXml {
+	version = project.version
+	sinceBuild = '202'
+	untilBuild = '212.*'
+}
+
+group project.group
+version project.version
 
 dependencies {
-	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
-	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.10'
-	testCompile group: 'junit', name: 'junit', version: '4.12'
-}
+	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
 
-intellij {
-	version '2019.3.2'
-}
-
-tasks.withType(JavaCompile) {
-	options.compilerArgs << '-Xlint:unchecked' << '-Xlint:deprecation'
-	options.deprecation = true
+	testCompileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
+	testAnnotationProcessor group: 'org.projectlombok', name: 'lombok', version: '1.18.20'
 }

@@ -8,7 +8,7 @@ import eu.andret.intelliachievements.achievement.AchievementManager;
 import eu.andret.intelliachievements.achievement.MenuAchievement;
 
 public class EasterEggFound extends MenuAchievement {
-	public EasterEggFound(IntelliAchievements.AchievementsState state, int... states) {
+	public EasterEggFound(final IntelliAchievements.AchievementsState state, final int... states) {
 		super(state, states);
 	}
 
@@ -30,7 +30,7 @@ public class EasterEggFound extends MenuAchievement {
 
 class EggFound extends AnAction {
 	@Override
-	public void actionPerformed(AnActionEvent anActionEvent) {
+	public void actionPerformed(final AnActionEvent anActionEvent) {
 		Messages.showDialog("You have found the Easter Egg and got the Achievement!", "Easter Egg", new String[]{"OK"}, -1, null);
 		anActionEvent.getPresentation().setEnabledAndVisible(true);
 		AchievementManager.getByClass(EasterEggFound.class).get(0).setCurrentState(1);

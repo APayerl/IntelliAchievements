@@ -4,12 +4,12 @@ import eu.andret.intelliachievements.IntelliAchievements;
 import eu.andret.intelliachievements.achievement.EditorAchievement;
 
 public class SymbolsTyped extends EditorAchievement {
-	public SymbolsTyped(IntelliAchievements.AchievementsState state, int... states) {
+	public SymbolsTyped(final IntelliAchievements.AchievementsState state, final int... states) {
 		super(state, states);
 	}
 
 	@Override
-	public void charTyped(char c) {
+	public void charTyped(final char c) {
 		if (c < 'z' && c > 'a' || c < '9' && c > '0' || c < 'Z' && c > 'A') {
 			setCurrentState(getCurrentState() + 1);
 		}
@@ -24,7 +24,6 @@ public class SymbolsTyped extends EditorAchievement {
 	public String getToolTipText() {
 		return "Type " + getMatchingState() + " symbols";
 	}
-
 
 	@Override
 	public boolean isHidden() {

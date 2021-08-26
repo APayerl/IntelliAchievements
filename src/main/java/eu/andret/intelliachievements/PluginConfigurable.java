@@ -18,7 +18,7 @@ public class PluginConfigurable implements Configurable {
 	@Nullable
 	@Override
 	public String getHelpTopic() {
-		return "Displays the Achievements availale to get";
+		return "Displays the Achievements available to get";
 	}
 
 	@Nullable

@@ -14,35 +14,34 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class FileSystemAchievement extends Achievement implements BulkFileListener {
-	public FileSystemAchievement(IntelliAchievements.AchievementsState state, int... states) {
+	protected FileSystemAchievement(final IntelliAchievements.AchievementsState state, final int... states) {
 		super(state, states);
 	}
 
 	private Optional<Project> getCurrentProject() {
 		return Arrays.stream(ProjectManager.getInstance().getOpenProjects())
 				.filter(p -> {
-					Window window = WindowManager.getInstance().suggestParentWindow(p);
+					final Window window = WindowManager.getInstance().suggestParentWindow(p);
 					return window != null && window.isActive();
 				})
 				.findFirst();
 	}
 
 	@Override
-	public void after(@NotNull List<? extends VFileEvent> events) {
+	public void after(@NotNull final List<? extends VFileEvent> events) {
 		getCurrentProject()
 				.ifPresent(project -> events.forEach(event -> fileChangedAfter(event, project)));
 	}
 
 	@Override
-	public void before(@NotNull List<? extends VFileEvent> events) {
+	public void before(@NotNull final List<? extends VFileEvent> events) {
 		getCurrentProject()
 				.ifPresent(project -> events.forEach(event -> fileChangedBefore(event, project)));
 	}
 
-	public void fileChangedAfter(@NotNull VFileEvent event, @NotNull Project project) {
+	public void fileChangedAfter(@NotNull final VFileEvent event, @NotNull final Project project) {
 	}
 
-	public void fileChangedBefore(@NotNull VFileEvent event, @NotNull Project project) {
+	public void fileChangedBefore(@NotNull final VFileEvent event, @NotNull final Project project) {
 	}
-
 }

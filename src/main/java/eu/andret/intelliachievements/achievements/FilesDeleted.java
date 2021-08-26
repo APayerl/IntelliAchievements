@@ -10,7 +10,7 @@ import eu.andret.intelliachievements.achievement.FileSystemAchievement;
 import org.jetbrains.annotations.NotNull;
 
 public class FilesDeleted extends FileSystemAchievement {
-	public FilesDeleted(IntelliAchievements.AchievementsState state, int... states) {
+	public FilesDeleted(final IntelliAchievements.AchievementsState state, final int... states) {
 		super(state, states);
 	}
 
@@ -30,8 +30,8 @@ public class FilesDeleted extends FileSystemAchievement {
 	}
 
 	@Override
-	public void fileChangedBefore(@NotNull VFileEvent event, @NotNull Project project) {
-		ProjectFileIndex fileIndex = ProjectRootManager.getInstance(project).getFileIndex();
+	public void fileChangedBefore(@NotNull final VFileEvent event, @NotNull final Project project) {
+		final ProjectFileIndex fileIndex = ProjectRootManager.getInstance(project).getFileIndex();
 		if (event instanceof VFileDeleteEvent && event.getFile() != null && fileIndex.isInContent(event.getFile())) {
 			setCurrentState(getCurrentState() + 1);
 		}

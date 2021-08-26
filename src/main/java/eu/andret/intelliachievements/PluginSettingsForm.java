@@ -10,27 +10,29 @@ import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.WindowConstants;
 import java.awt.Dimension;
 
 public class PluginSettingsForm {
+	private static final String GROW = "[grow]";
 	private JPanel root;
 
 	public JComponent getRootComponent() {
 		if (root == null) {
-			root = new JPanel(new MigLayout("wrap 1", "[grow]"));
-			JPanel achievementsPanel = new JPanel(new MigLayout("", "[grow]", "[nogrid]"));
+			root = new JPanel(new MigLayout("wrap 1", GROW));
+			final JPanel achievementsPanel = new JPanel(new MigLayout("", GROW, "[nogrid]"));
 			achievementsPanel.setBorder(BorderFactory.createTitledBorder("Achievements"));
 			achievementsPanel.setLayout(new BoxLayout(achievementsPanel, BoxLayout.PAGE_AXIS));
 			achievementsPanel.setMaximumSize(new Dimension(725, 800));
 			achievementsPanel.setPreferredSize(new Dimension(725, AchievementManager.getAllAchievements().size() * 65));
-			JPanel test = new JPanel(new MigLayout("", "[grow]", "[nogrid]"));
+			final JPanel test = new JPanel(new MigLayout("", GROW, "[nogrid]"));
 			test.setMaximumSize(new Dimension(715, 800));
 			test.setPreferredSize(new Dimension(715, AchievementManager.getAllAchievements().size() * 60));
 			test.setLayout(new BoxLayout(test, BoxLayout.PAGE_AXIS));
-			JBScrollPane scrollPane = new JBScrollPane(test,
-					JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-					JBScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			final JBScrollPane scrollPane = new JBScrollPane(test,
+					ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+					ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 			test.setAutoscrolls(true);
 			scrollPane.setBorder(BorderFactory.createEmptyBorder());
 			AchievementManager.getAllAchievements().forEach(achievement -> {
@@ -43,12 +45,11 @@ public class PluginSettingsForm {
 		return root;
 	}
 
-	public static void main(String[] args) {
-		IntelliAchievements.beta();
+	public static void main(final String[] args) {
 		new IntelliAchievements().initializeComponent();
-		PluginSettingsForm form = new PluginSettingsForm();
+		final PluginSettingsForm form = new PluginSettingsForm();
 
-		JFrame frame = new JFrame("Test: IntelliAchievements SettingsForm");
+		final JFrame frame = new JFrame("Test: IntelliAchievements SettingsForm");
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		frame.setContentPane(form.getRootComponent());
 		frame.setSize(750, 500);

@@ -4,7 +4,7 @@ import com.intellij.execution.filters.Filter;
 import eu.andret.intelliachievements.IntelliAchievements;
 
 public abstract class ConsoleAchievement extends Achievement implements Filter {
-	public ConsoleAchievement(IntelliAchievements.AchievementsState state, int... states) {
+	protected ConsoleAchievement(final IntelliAchievements.AchievementsState state, final int... states) {
 		super(state, states);
 	}
 }

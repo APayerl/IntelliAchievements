@@ -24,12 +24,10 @@ import java.util.Arrays;
 		@Storage("achievements.xml")
 })
 public class IntelliAchievements implements PersistentStateComponent<IntelliAchievements.AchievementsState> {
-	private static boolean release = true;
-
 	private AchievementsState achievementsState = new AchievementsState();
 
 	public IntelliAchievements() {
-		Achievement[] typical = {
+		final Achievement[] typical = {
 				new HelloWorld(achievementsState, 1, 10, 100),
 				new SymbolsTyped(achievementsState, 100, 1_000, 1_000_000, 1_000_000_000, Integer.MAX_VALUE),
 				new FilesCreated(achievementsState, 1, 10, 100, 1_000, 10_000),
@@ -40,7 +38,7 @@ public class IntelliAchievements implements PersistentStateComponent<IntelliAchi
 		Arrays.stream(typical).forEach(achievement -> {
 			achievement.addOnStateUpdateListener((a, old, current) -> {
 				if (Arrays.stream(a.getStates()).anyMatch(s -> s == current)) {
-					Notifications.Bus.notify(new Notification("Achievement", a.getName(), a.getToolTipText(), NotificationType.INFORMATION));
+					Notifications.Bus.notify(new Notification("Achievements", a.getName(), a.getToolTipText(), NotificationType.INFORMATION));
 				}
 			});
 			if (BulkFileListener.class.isAssignableFrom(achievement.getClass())) {
@@ -48,9 +46,6 @@ public class IntelliAchievements implements PersistentStateComponent<IntelliAchi
 			}
 			AchievementManager.registerAchievement(achievement);
 		});
-		if (release) {
-			MyListeners.setUpListeners();
-		}
 	}
 
 	public static class AchievementsState {
@@ -76,11 +71,7 @@ public class IntelliAchievements implements PersistentStateComponent<IntelliAchi
 	}
 
 	@Override
-	public void loadState(@NotNull AchievementsState state) {
+	public void loadState(@NotNull final AchievementsState state) {
 		achievementsState = state;
-	}
-
-	public static void beta() {
-		release = false;
 	}
 }

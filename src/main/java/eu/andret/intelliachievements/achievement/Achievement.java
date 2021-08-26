@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public abstract class Achievement implements Comparable<Achievement> {
 	private final int[] states;
@@ -19,7 +20,7 @@ public abstract class Achievement implements Comparable<Achievement> {
 		void stateUpdated(Achievement a, int old, int current);
 	}
 
-	Achievement(IntelliAchievements.AchievementsState state, int... states) {
+	Achievement(final IntelliAchievements.AchievementsState state, final int... states) {
 		this.state = state;
 		this.states = states;
 	}
@@ -42,62 +43,66 @@ public abstract class Achievement implements Comparable<Achievement> {
 	}
 
 	public int getCurrentState() {
-		try {
-			return (int) Objects.requireNonNull(getTargetField()).get(state);
-		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
-		}
-		return 0;
+		return getTargetField().map(field -> {
+			try {
+				return (int) field.get(state);
+			} catch (final IllegalAccessException ex) {
+				ex.printStackTrace();
+			}
+			return 0;
+		}).orElse(0);
 	}
 
-	private Field getTargetField() {
+	private Optional<Field> getTargetField() {
 		return Arrays.stream(state.getClass().getDeclaredFields())
 				.filter(field -> field.isAnnotationPresent(AchievementStorage.class))
 				.filter(field -> field.getAnnotation(AchievementStorage.class).achievement().equals(getClass()))
-				.findFirst()
-				.orElse(null);
+				.findFirst();
 	}
 
-	public void setCurrentState(int newState) {
-		try {
-			for (OnStateUpdateListener listener : onStateUpdateListeners) {
-				listener.stateUpdated(this, (int) Objects.requireNonNull(getTargetField()).get(state), newState);
+	public void setCurrentState(final int newState) {
+		getTargetField().ifPresent(field -> {
+			try {
+				for (final OnStateUpdateListener listener : onStateUpdateListeners) {
+					listener.stateUpdated(this, (int) field.get(state), newState);
+				}
+				field.set(state, newState);
+			} catch (final IllegalAccessException ex) {
+				ex.printStackTrace();
 			}
-			getTargetField().set(state, newState);
-		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
-		}
+		});
 	}
 
-	public final void addOnStateUpdateListener(OnStateUpdateListener listener) {
+	public final void addOnStateUpdateListener(final OnStateUpdateListener listener) {
 		onStateUpdateListeners.add(listener);
 	}
 
 	@Override
 	public String toString() {
-		String result = "Achievement{" + getClass().getSimpleName() +
-				", name=\"" + getName() + "\"";
+		return getTargetField().map(field -> {
+			String result = "Achievement{" + getClass().getSimpleName() + ", name=\"" + getName() + "\"";
 
-		try {
-			result += ", currentState=" + (int) Objects.requireNonNull(getTargetField()).get(state);
-		} catch (IllegalAccessException ex) {
-			ex.printStackTrace();
-		}
+			try {
+				result += ", currentState=" + (int) field.get(state);
+			} catch (final IllegalAccessException ex) {
+				ex.printStackTrace();
+			}
 
-		return result + ", matchingState=" + getMatchingState() +
-				", states=" + Arrays.toString(states) +
-				'}';
+			return result + ", matchingState=" + getMatchingState() +
+					", states=" + Arrays.toString(states) +
+					'}';
+		}).orElse("");
 	}
 
 	@Override
-	public final boolean equals(Object o) {
+	public final boolean equals(final Object o) {
 		if (this == o) {
 			return true;
 		}
 		if (o == null || getClass() != o.getClass()) {
 			return false;
 		}
-		Achievement that = (Achievement) o;
+		final Achievement that = (Achievement) o;
 		return Arrays.equals(getStates(), that.getStates()) &&
 				Objects.equals(getCurrentState(), that.getCurrentState()) &&
 				Objects.equals(getName(), that.getName());
@@ -105,11 +110,11 @@ public abstract class Achievement implements Comparable<Achievement> {
 
 	@Override
 	public final int hashCode() {
-		return Objects.hash(getStates(), getCurrentState(), getName());
+		return Objects.hash(Arrays.hashCode(getStates()), getCurrentState(), getName());
 	}
 
 	@Override
-	public int compareTo(@NotNull Achievement achievement) {
+	public int compareTo(@NotNull final Achievement achievement) {
 		if (isHidden() == achievement.isHidden()) {
 			return getName().compareTo(achievement.getName());
 		}

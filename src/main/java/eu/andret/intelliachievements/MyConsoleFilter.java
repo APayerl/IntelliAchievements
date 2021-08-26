@@ -8,9 +8,11 @@ import eu.andret.intelliachievements.achievement.ConsoleAchievement;
 import org.jetbrains.annotations.NotNull;
 
 public class MyConsoleFilter implements ConsoleFilterProvider {
-    @NotNull
-    @Override
-    public Filter[] getDefaultFilters(@NotNull Project project) {
-        return AchievementManager.getByClass(ConsoleAchievement.class).toArray(new Filter[]{});
-    }
+	@Override
+	public Filter @NotNull [] getDefaultFilters(@NotNull final Project project) {
+		return AchievementManager.getByClass(ConsoleAchievement.class)
+				.stream()
+				.map(ConsoleAchievement.class::cast)
+				.toArray(Filter[]::new);
+	}
 }
